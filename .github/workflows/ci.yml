@@ -1,0 +1,59 @@
+name: CI Microservicios
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-usuarios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias en Usuarios
+        run: |
+          cd microservicios/usuarios
+          npm ci
+      - name: Ejecutar pruebas
+        run: |
+          cd microservicios/usuarios
+          npm test -- --passWithNoTests
+
+  test-productos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias en Productos
+        run: |
+          cd microservicios/productos
+          npm ci
+      - name: Ejecutar pruebas
+        run: |
+          cd microservicios/productos
+          npm test -- --passWithNoTests
+
+  test-pedidos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias en Pedidos
+        run: |
+          cd microservicios/pedidos
+          npm ci
+      - name: Ejecutar pruebas
+        run: |
+          cd microservicios/pedidos
+          npm test -- --passWithNoTests
