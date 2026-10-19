@@ -213,4 +213,3 @@ app.delete('/pedidos/:id', async (req, res) => {
 });
 
 module.exports = app;
-throw new Error('Error intencional en el Monolito');
