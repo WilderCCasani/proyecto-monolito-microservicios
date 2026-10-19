@@ -87,4 +87,3 @@ app.get('/usuarios/:id', async (req, res) => {
         res.status(500).json({ error: 'Error al consultar usuario' });
     }
 });
-throw new Error('Error intencional Microservicios');
