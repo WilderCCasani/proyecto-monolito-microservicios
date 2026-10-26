@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pedidos-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pedidos-db
+  template:
+    metadata:
+      labels:
+        app: pedidos-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        env:
+        - name: POSTGRES_DB
+          value: pedidos_db
+        - name: POSTGRES_USER
+          value: pedidos_user
+        - name: POSTGRES_PASSWORD
+          value: pedidos123
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pedidos-db
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: pedidos-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pedidos-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pedidos-app
+  template:
+    metadata:
+      labels:
+        app: pedidos-app
+    spec:
+      containers:
+      - name: pedidos
+        image: pedidos-app:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3003
+        env:
+        - name: PORT
+          value: "3003"
+        - name: DB_HOST
+          value: pedidos-db
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: pedidos_db
+        - name: DB_USER
+          value: pedidos_user
+        - name: DB_PASSWORD
+          value: pedidos123
+        - name: USUARIOS_URL
+          value: http://usuarios:3001
+        - name: PRODUCTOS_URL
+          value: http://productos:3002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pedidos
+spec:
+  type: NodePort
+  ports:
+  - port: 3003
+    targetPort: 3003
+    nodePort: 30003
+  selector:
+    app: pedidos-app
